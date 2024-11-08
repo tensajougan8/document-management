@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - dev  # Optionally track dev branch if you use it
+    tags:
+      - 'v*'  # Trigger on version tags, e.g. v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'  # Or your project's Node.js version
+
+      - name: Install dependencies
+        run: npm ci  # This installs all dependencies defined in package-lock.json
+
+      - name: Run semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token for release creation
+        run: npx semantic-release
