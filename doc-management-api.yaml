@@ -1,0 +1,295 @@
+openapi: 3.0.0
+info:
+  title: JKTech API
+  description: API for managing documents and users.
+  version: 1.0.0
+  contact:
+    name: JKTech
+    email: support@jktech.com
+    url: http://localhost:3000
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /documents/processing:
+    post:
+      summary: Create an event
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  example: "4357b90e-64bc-4624-8dac-571c52c494e0"
+                id:
+                  type: string
+                  example: "dsaoiudsa"
+                status:
+                  type: string
+                  example: "in_progress"
+      responses:
+        '201':
+          description: Event created successfully
+        '400':
+          description: Bad request
+
+  /documents/{docId}:
+    patch:
+      summary: Update document name
+      operationId: updateDocName
+      parameters:
+        - in: path
+          name: docId
+          required: true
+          schema:
+            type: string
+          description: The ID of the document to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newName:
+                  type: string
+                  example: "Tyuio"
+      responses:
+        '200':
+          description: Document name updated
+        '400':
+          description: Invalid document ID or request body
+
+    get:
+      summary: Get a document by ID
+      operationId: getDocById
+      parameters:
+        - in: path
+          name: docId
+          required: true
+          schema:
+            type: string
+          description: The ID of the document to retrieve
+      responses:
+        '200':
+          description: Document retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  docId:
+                    type: string
+                  name:
+                    type: string
+                  status:
+                    type: string
+        '404':
+          description: Document not found
+
+    delete:
+      summary: Delete a document
+      operationId: deleteDoc
+      parameters:
+        - in: path
+          name: docId
+          required: true
+          schema:
+            type: string
+          description: The ID of the document to delete
+      responses:
+        '200':
+          description: Document deleted successfully
+        '404':
+          description: Document not found
+
+  /documents/upload:
+    post:
+      summary: Upload documents
+      operationId: uploadDocuments
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: The files to upload
+      responses:
+        '200':
+          description: Documents uploaded successfully
+        '400':
+          description: Invalid file format
+
+  /documents:
+    get:
+      summary: Get all documents
+      operationId: getAllDocuments
+      responses:
+        '200':
+          description: List of all documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    docId:
+                      type: string
+                    name:
+                      type: string
+                    status:
+                      type: string
+        '500':
+          description: Internal server error
+
+  /user/update-role/editot:
+    patch:
+      summary: Update user role
+      operationId: updateUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  example: "viewer"
+      responses:
+        '200':
+          description: User role updated successfully
+        '400':
+          description: Invalid request or role
+
+  /user/{username}:
+    get:
+      summary: Get user by username
+      operationId: getUserByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: The username to retrieve
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  role:
+                    type: string
+                  email:
+                    type: string
+        '404':
+          description: User not found
+
+  /user:
+    get:
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    email:
+                      type: string
+                    role:
+                      type: string
+        '500':
+          description: Internal server error
+
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "viewer1"
+                password:
+                  type: string
+                  example: "password123"
+                email:
+                  type: string
+                  example: "tyuioewe121w1@mail.com"
+                role:
+                  type: string
+                  example: "viewer"
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request
+
+  /auth/login:
+    post:
+      summary: Login a user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The JWT token for the user
+        '401':
+          description: Invalid credentials
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
