@@ -53,6 +53,8 @@ Start by cloning the project to your local machine:
 ```bash
 git clone https://github.com/your-username/document-management-system.git
 cd document-management-system
+docker-compose build
+docker-compose up
 
 ```
 
