@@ -1,0 +1,136 @@
+# version: '3.7'
+
+# services:
+#   rabbitmq:
+#     image: rabbitmq:3-management
+#     container_name: rabbitmq
+#     ports:
+#       - "5672:5672"  # RabbitMQ broker port
+#       - "15672:15672"  # RabbitMQ management UI
+#     networks:
+#       - app-network
+
+#   postgres-db:
+#     image: postgres:13
+#     container_name: postgres-db
+#     environment:
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: password
+#       POSTGRES_DB: progress_db
+#     ports:
+#       - "5432:5432"
+#     networks:
+#       - app-network
+
+#   event-publisher:
+#     build:
+#       context: ./producer
+#     container_name: producer
+#     depends_on:
+#       - rabbitmq
+#       - postgres-db
+#     ports:
+#       - "3000:3000"  # Expose port 3000
+#     environment:
+#       RABBITMQ_HOST: rabbitmq
+#       POSTGRES_HOST: postgres-db
+#     networks:
+#       - app-network
+
+#   event-consumer:
+#     build:
+#       context: ./consumer
+#     container_name: consumer
+#     depends_on:
+#       - rabbitmq
+#       - postgres-db
+#     ports:
+#       - "3001:3001"  # Expose port 3001
+#     environment:
+#       RABBITMQ_HOST: rabbitmq
+#       POSTGRES_HOST: postgres-db
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+version: '3.7'
+
+services:
+  event-publisher:
+    build:
+      context: ./producer
+    container_name: producer
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3000:3000"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Add this line
+    networks:
+      - app-network
+
+  event-consumer:
+    build:
+      context: ./consumer
+    container_name: consumer
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3001:3001"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Add this line
+    networks:
+      - app-network
+
+  user-service:
+    build:
+      context: ./user-service
+    container_name: user-service
+    ports:
+      - "3002:3002"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Add this line
+    networks:
+      - app-network
+
+  auth-service:
+    build:
+      context: ./authentication-service
+    container_name: authentication-service
+    ports:
+      - "3003:3003"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Add this line
+    networks:
+      - app-network
+
+  document-service:
+    build:
+      context: ./document-service
+    container_name: document-service
+    ports:
+      - "3004:3004"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Add this line
+    networks:
+      - app-network
+
+    
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
