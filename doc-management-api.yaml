@@ -1,19 +1,17 @@
 openapi: 3.0.0
 info:
-  title: JKTech API
+  title: Document management API
   description: API for managing documents and users.
   version: 1.0.0
-  contact:
-    name: JKTech
-    email: support@jktech.com
-    url: http://localhost:3000
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:80
     description: Local development server
 
 paths:
-  /documents/processing:
+  /document-service/documents/processing:
     post:
+      tags: 
+        - document-service
       summary: Create an event
       operationId: createEvent
       requestBody:
@@ -28,7 +26,7 @@ paths:
                   example: "4357b90e-64bc-4624-8dac-571c52c494e0"
                 id:
                   type: string
-                  example: "dsaoiudsa"
+                  example: "9097b90e-64bc-4624-8dac-327c52c494e0"
                 status:
                   type: string
                   example: "in_progress"
@@ -38,8 +36,10 @@ paths:
         '400':
           description: Bad request
 
-  /documents/{docId}:
+  /document-service/documents/{docId}:
     patch:
+      tags: 
+          - document-service
       summary: Update document name
       operationId: updateDocName
       parameters:
@@ -66,6 +66,8 @@ paths:
           description: Invalid document ID or request body
 
     get:
+      tags: 
+        - document-service
       summary: Get a document by ID
       operationId: getDocById
       parameters:
@@ -93,6 +95,8 @@ paths:
           description: Document not found
 
     delete:
+      tags: 
+        - document-service
       summary: Delete a document
       operationId: deleteDoc
       parameters:
@@ -108,8 +112,10 @@ paths:
         '404':
           description: Document not found
 
-  /documents/upload:
+  /document-service/documents/upload:
     post:
+      tags: 
+        - document-service
       summary: Upload documents
       operationId: uploadDocuments
       requestBody:
@@ -131,8 +137,10 @@ paths:
         '400':
           description: Invalid file format
 
-  /documents:
+  /document-service/documents:
     get:
+      tags: 
+        - document-service
       summary: Get all documents
       operationId: getAllDocuments
       responses:
@@ -154,10 +162,18 @@ paths:
         '500':
           description: Internal server error
 
-  /user/update-role/editot:
+  /user-service/user/update-role/{username}:
     patch:
+      tags: 
+        - user-service
       summary: Update user role
       operationId: updateUserRole
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -174,8 +190,10 @@ paths:
         '400':
           description: Invalid request or role
 
-  /user/{username}:
+  /user-service/user/{username}:
     get:
+      tags: 
+        - user-service
       summary: Get user by username
       operationId: getUserByUsername
       parameters:
@@ -202,8 +220,10 @@ paths:
         '404':
           description: User not found
 
-  /user:
+  /user-service/user:
     get:
+      tags: 
+        - user-service
       summary: Get all users
       operationId: getAllUsers
       responses:
@@ -225,8 +245,10 @@ paths:
         '500':
           description: Internal server error
 
-  /auth/register:
+  /auth-service/auth/register:
     post:
+      tags: 
+        - auth-service
       summary: Register a new user
       operationId: registerUser
       requestBody:
@@ -254,8 +276,10 @@ paths:
         '400':
           description: Bad request
 
-  /auth/login:
+  /auth-service/auth/login:
     post:
+      tags: 
+        - auth-service
       summary: Login a user
       operationId: loginUser
       requestBody:
