@@ -55,6 +55,8 @@ git clone https://github.com/your-username/document-management-system.git
 cd document-management-system
 docker-compose build
 docker-compose up
+The server will be running on localhost 80
+URL http://localhost:80/auth-service/auth/register
 
 ```
 

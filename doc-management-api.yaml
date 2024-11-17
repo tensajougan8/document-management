@@ -26,7 +26,7 @@ paths:
                   example: "4357b90e-64bc-4624-8dac-571c52c494e0"
                 id:
                   type: string
-                  example: "dsaoiudsa"
+                  example: "9097b90e-64bc-4624-8dac-327c52c494e0"
                 status:
                   type: string
                   example: "in_progress"
